@@ -46,7 +46,6 @@ func getProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(string(responseJSON))
-	//w.WriteHeader(http.StatusOK)
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(responseJSON)
@@ -55,7 +54,6 @@ func getProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Fprintf(w, "The product you want is %s with barcode %s and %d in stock", product.Name, product.Barcode, product.Stock)
 	fmt.Println("Endpoint Hit: product")
 }
 

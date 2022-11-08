@@ -23,12 +23,12 @@ func UpsertProduct(inventory Model.Inventory, db *sql.DB) bool {
 }
 
 func updateStock(inventory Model.Inventory, db *sql.DB) (bool, error) {
-	existingProduct := GetStock(inventory.Barcode, db)
+	existingStock := GetStock(inventory.Barcode, db)
 
-	if existingProduct.Barcode != "" {
+	if existingStock.Barcode != "" {
 		updateQuery, params, err := sq.Update(TableName).
-			Set(StockColumn, existingProduct.Stock+inventory.Stock).
-			Where(sq.Eq{ProductTable.BarcodeColumn: existingProduct.Barcode}).
+			Set(StockColumn, existingStock.Stock+inventory.Stock).
+			Where(sq.Eq{ProductTable.BarcodeColumn: existingStock.Barcode}).
 			RunWith(db).
 			PlaceholderFormat(sq.Dollar).
 			ToSql()
@@ -63,12 +63,11 @@ func insertStock(inventory Model.Inventory, db *sql.DB) bool {
 		return false
 	}
 	return true
-
 }
 
 func GetStock(barcodeToSearch string, db *sql.DB) Model.Inventory {
 
-	seql, params, err := sq.Select("*").
+	selectQuery, params, err := sq.Select("*").
 		From(TableName).
 		Where(sq.Eq{BarcodeColumn: barcodeToSearch}).
 		RunWith(db).
@@ -78,11 +77,16 @@ func GetStock(barcodeToSearch string, db *sql.DB) Model.Inventory {
 		log.Fatalln(err)
 	}
 
-	row, err := db.Query(seql, params...)
+	row, err := db.Query(selectQuery, params...)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer row.Close()
+	defer func(row *sql.Rows) {
+		err := row.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(row)
 
 	var inventory = Model.Inventory{}
 
@@ -98,5 +102,4 @@ func GetStock(barcodeToSearch string, db *sql.DB) Model.Inventory {
 	}
 
 	return inventory
-
 }
