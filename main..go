@@ -27,7 +27,12 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	result := inv.UpsertProduct(product, db)
 
-	fmt.Fprintf(w, "Welcome to the HomePage! %t ", result)
+	_, err = fmt.Fprintf(w, "Welcome to the HomePage! %t ", result)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
 	fmt.Println("Endpoint Hit: AddProduct")
 }
 
@@ -38,6 +43,7 @@ func getProduct(w http.ResponseWriter, r *http.Request) {
 	responseJSON, err := json.MarshalIndent(product, "", "    ")
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 	fmt.Println(string(responseJSON))
 	//w.WriteHeader(http.StatusOK)
@@ -45,6 +51,7 @@ func getProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(responseJSON)
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 
