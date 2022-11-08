@@ -1,7 +1,6 @@
 package Model
 
-type Product struct {
+type Inventory struct {
 	Barcode string
-	Name    string
 	Stock   int
 }

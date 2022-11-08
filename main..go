@@ -1,8 +1,11 @@
 package main
 
 import (
-	pr "ProductManagementService/DBAccess"
-	"ProductManagementService/DBAccess/Model"
+	DAL "ProductManagementService/DBAccess/Database"
+	inv "ProductManagementService/DBAccess/Database/InventoryTable"
+	invModel "ProductManagementService/DBAccess/Database/InventoryTable/Model"
+	pr "ProductManagementService/DBAccess/Database/ProductTable"
+	_ "ProductManagementService/DBAccess/Database/ProductTable/Model"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -14,7 +17,7 @@ var db *sql.DB
 
 func AddProduct(w http.ResponseWriter, r *http.Request) {
 
-	var product Model.Product
+	var product invModel.Inventory
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -22,7 +25,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	result := pr.UpsertProduct(product, db)
+	result := inv.UpsertProduct(product, db)
 
 	fmt.Fprintf(w, "Welcome to the HomePage! %t ", result)
 	fmt.Println("Endpoint Hit: AddProduct")
@@ -51,25 +54,14 @@ func getProduct(w http.ResponseWriter, r *http.Request) {
 
 func handleRequests() {
 
-	db = pr.ConnectToDatabase()
+	db = DAL.ConnectToDatabase()
 
 	http.HandleFunc("/get/product", getProduct)
 	http.HandleFunc("/add/product", AddProduct)
+	fmt.Println("Server ready and listening on port 1000")
 	log.Fatal(http.ListenAndServe(":10000", nil))
 }
 
 func main() {
-	//handleRequests()
-	//db := pr.ConnectToDatabase()
-
-	db = pr.ConnectToDatabase()
-	pr.UpsertProduct(Model.Product{
-		Barcode: "135789",
-		Name:    "bro",
-		Stock:   1,
-	}, db)
-	//pr.GetProductByBarcode("135789", db)
-
-	//defer db.Close()
-
+	handleRequests()
 }
