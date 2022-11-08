@@ -2,7 +2,6 @@ package InventoryTable
 
 import (
 	"ProductManagementService/DBAccess/Database/InventoryTable/Model"
-	"ProductManagementService/DBAccess/Database/ProductTable"
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	"log"
@@ -28,7 +27,7 @@ func updateStock(inventory Model.Inventory, db *sql.DB) (bool, error) {
 	if existingStock.Barcode != "" {
 		updateQuery, params, err := sq.Update(TableName).
 			Set(StockColumn, existingStock.Stock+inventory.Stock).
-			Where(sq.Eq{ProductTable.BarcodeColumn: existingStock.Barcode}).
+			Where(sq.Eq{BarcodeColumn: existingStock.Barcode}).
 			RunWith(db).
 			PlaceholderFormat(sq.Dollar).
 			ToSql()
