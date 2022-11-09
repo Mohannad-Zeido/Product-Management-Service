@@ -6,6 +6,13 @@ import (
 	"log"
 )
 
+type DbConfig struct {
+	Username string
+	Password string
+	Port     int
+	Database string
+}
+
 func ConnectToDatabase() *sql.DB {
 	connStr := fmt.Sprintf("postgres://%s:%s@localhost:%d/%s?sslmode=disable", Config.Username, Config.Password, Config.Port, Config.Database)
 

@@ -8,13 +8,6 @@ import (
 	"log"
 )
 
-type DbConfig struct {
-	Username string
-	Password string
-	Port     int
-	Database string
-}
-
 func InsertProduct(product Model.Product, db *sql.DB) bool {
 
 	insertQuery, params, err := sq.Insert(TableName).
@@ -55,18 +48,18 @@ func GetProductByBarcode(barcodeToSearch string, db *sql.DB) Model.Product {
 	}
 	defer row.Close()
 
-	var product = Model.Product{}
+	var returnedProduct = Model.Product{}
 
 	exists := row.Next()
 	if !exists {
 		return Model.Product{}
 	}
 
-	err = row.Scan(&product.Barcode, &product.Name, &product.ImageUrl, &product.Category)
+	err = row.Scan(&returnedProduct.Barcode, &returnedProduct.Name, &returnedProduct.ImageUrl, &returnedProduct.Category)
 	if err != nil {
 		log.Fatalln(err)
 		return Model.Product{}
 	}
 
-	return product
+	return returnedProduct
 }
