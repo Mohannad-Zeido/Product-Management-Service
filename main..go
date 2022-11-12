@@ -25,14 +25,14 @@ func handleRequests() {
 	db = DAL.ConnectToDatabase()
 	r := mux.NewRouter()
 	r.HandleFunc("/products/{barcode}", getProduct).Methods("GET")
-	r.HandleFunc("/inventory/add", addProduct)
+	r.HandleFunc("/inventory/add", addInventory)
 	http.Handle("/", r)
 
 	fmt.Println("Server ready and listening on port 1000")
 	log.Fatal(http.ListenAndServe(":10000", nil))
 }
 
-func addProduct(w http.ResponseWriter, r *http.Request) {
+func addInventory(w http.ResponseWriter, r *http.Request) {
 
 	var product invModel.Inventory
 
@@ -50,7 +50,7 @@ func addProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Endpoint Hit: addProduct")
+	fmt.Println("Endpoint Hit: addInventory")
 }
 
 func getProduct(w http.ResponseWriter, r *http.Request) {
