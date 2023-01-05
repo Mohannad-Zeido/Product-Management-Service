@@ -3,6 +3,7 @@ package Services
 import (
 	"ProductManagementService/DBAccess/Database/ProductTable"
 	"ProductManagementService/DBAccess/Database/ProductTable/Model"
+	scraper "ProductManagementService/client"
 	"database/sql"
 	"errors"
 )
@@ -18,6 +19,8 @@ func (ps ProductService) GetProductByBarcode(productBarcode string) (Model.Produ
 	if retrievedProduct.Barcode != "" {
 		return retrievedProduct, nil
 	}
+
+	scraper.GetProduct(productBarcode)
 
 	//TODO add call to get product from Barcode Lookup
 

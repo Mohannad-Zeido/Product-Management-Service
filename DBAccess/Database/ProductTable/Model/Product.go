@@ -5,4 +5,5 @@ type Product struct {
 	Name     string
 	ImageUrl string
 	Category string
+	Quantity int
 }

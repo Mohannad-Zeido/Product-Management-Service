@@ -12,7 +12,7 @@ func InsertProduct(product Model.Product, db *sql.DB) bool {
 
 	insertQuery, params, err := sq.Insert(TableName).
 		Columns(BarcodeColumn, NameColumn, ImageUrlColumn, CategoryColumn).
-		Values(product.Barcode, product.Name, product.ImageUrl, product.Category).
+		Values(product.Barcode, product.Name, product.ImageUrl, product.Category, product.Quantity).
 		RunWith(db).
 		PlaceholderFormat(sq.Dollar).
 		ToSql()
@@ -55,7 +55,7 @@ func GetProductByBarcode(barcodeToSearch string, db *sql.DB) Model.Product {
 		return Model.Product{}
 	}
 
-	err = row.Scan(&returnedProduct.Barcode, &returnedProduct.Name, &returnedProduct.ImageUrl, &returnedProduct.Category)
+	err = row.Scan(&returnedProduct.Barcode, &returnedProduct.Name, &returnedProduct.ImageUrl, &returnedProduct.Category, &returnedProduct.Quantity)
 	if err != nil {
 		log.Fatalln(err)
 		return Model.Product{}
